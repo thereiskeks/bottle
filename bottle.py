@@ -974,10 +974,17 @@ class Bottle(object):
         return tob(template(ERROR_PAGE_TEMPLATE, e=res, template_settings=dict(name='__ERROR_PAGE_TEMPLATE')))
 
     def _handle(self, environ):
-        converted = 'bottle.raw_path' in environ
         path = environ['bottle.raw_path'] = environ['PATH_INFO']
-        if py3k and not converted:
-            environ['PATH_INFO'] = path.encode('latin1').decode('utf8', 'ignore')
+                 if py3k:
+             try:
+                 environ['PATH_INFO'] = path.encode('latin1').decode('utf8')
+            except UnicodeError:
+                return HTTPError(400, 'Invalid path string. Expected UTF-8')
+            except UnicodeError: 
+                try: # BUG 602 encoding path to latin1 may contain char not in utf8
+                    environ['PATH_INFO'] = urlunquote(path) 
+                except: # Really really can't convert the path variable
+                    return HTTPError(400, 'Invalid path string. Expected UTF-8')
 
         environ['bottle.app'] = self
         request.bind(environ)
