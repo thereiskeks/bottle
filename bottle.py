@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import unicode_literals
 # -*- coding: utf-8 -*-
 """
 Bottle is a fast and simple micro-framework for small web applications. It
@@ -973,8 +974,9 @@ class Bottle(object):
         return tob(template(ERROR_PAGE_TEMPLATE, e=res, template_settings=dict(name='__ERROR_PAGE_TEMPLATE')))
 
     def _handle(self, environ):
+        converted = 'bottle.raw_path' in environ
         path = environ['bottle.raw_path'] = environ['PATH_INFO']
-        if py3k:
+        if py3k and not converted:
             environ['PATH_INFO'] = path.encode('latin1').decode('utf8', 'ignore')
 
         environ['bottle.app'] = self
