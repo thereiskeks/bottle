@@ -976,8 +976,8 @@ class Bottle(object):
     def _handle(self, environ):
         path = environ['bottle.raw_path'] = environ['PATH_INFO']
         if py3k:
-             try:
-                 environ['PATH_INFO'] = path.encode('latin1').decode('utf8')
+            try:
+                environ['PATH_INFO'] = path.encode('latin1').decode('utf8')
             except UnicodeError:
                 return HTTPError(400, 'Invalid path string. Expected UTF-8')
             except UnicodeError: 
