@@ -975,7 +975,7 @@ class Bottle(object):
 
     def _handle(self, environ):
         path = environ['bottle.raw_path'] = environ['PATH_INFO']
-                 if py3k:
+        if py3k:
              try:
                  environ['PATH_INFO'] = path.encode('latin1').decode('utf8')
             except UnicodeError:
